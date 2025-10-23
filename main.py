@@ -1,11 +1,19 @@
 import sys
 import requests 
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QMainWindow
 from PyQt5.QtCore import Qt
 class WeatherApp(QWidget):
     def __init__(self):
         super().__init__()
+
+        self.setGeometry(700,300,500,500)
+        self.image_background = QLabel(self)
+        self.image_background.setGeometry(0,0,500,500)
+        #pixmap = QPixmap("sky.jpg")
+        #self.image_background.setPixmap(pixmap)
+        #self.image_background.setScaledContents(True)
+
         self.city_label=QLabel("enter a city name: ", self)
         self.city_input=QLineEdit(self)
         self.get_weather_button=QPushButton("get weather:", self)
@@ -13,10 +21,6 @@ class WeatherApp(QWidget):
         self.emoji_label=QLabel(self)
         self.description_label=QLabel(self)
         self.forecast_label = QLabel(self)
-        self.map = QLabel(self)
-        pixmap = QPixmap("")
-        self.map.setPixmap(pixmap)
-        self.map.setScaledContents(True)
         self.initUI()
 
     def initUI(self):
@@ -151,7 +155,7 @@ class WeatherApp(QWidget):
         weather_description = data["weather"][0]["description"]
 
         self.temperature_label.setText(f"{temp_f:.0f}°F")
-        self.emoji_label.setText(self.get_weather_emoji(weather_id))
+        self.emoji_label.setText(self.get_weather_emoji(self,weather_id))
         self.description_label.setText(weather_description)
 
     def display_forecast(self,data):
@@ -164,7 +168,9 @@ class WeatherApp(QWidget):
         self.forecast_label.setText(f"{day1:.0f}°F {day2:.0f}°F {day3:.0f}°F {day4:.0f}°F {day5:.0f}°F")
 
     @staticmethod
-    def get_weather_emoji(weather_id):
+    def get_weather_emoji(self,weather_id):
+        self.image_background.clear()
+
         if 200 <= weather_id <= 232:
             return "⛈️" 
         elif 300<= weather_id <= 321:
@@ -182,6 +188,9 @@ class WeatherApp(QWidget):
         elif weather_id == 781:
             return "🌪️"
         elif 800 == weather_id:
+            pixmap = QPixmap("sky.jpg")
+            self.image_background.setPixmap(pixmap)
+            self.image_background.setScaledContents(True)
             return "🌤️"
         elif 801 <= weather_id <= 804:
             return "☁️"
